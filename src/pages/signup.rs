@@ -9,6 +9,7 @@ use leptos_router::hooks::use_navigate;
 
 use crate::api::auth::signup;
 use crate::pages::utils::no_auth_required;
+use crate::utils::InputExtractor;
 
 #[component]
 pub fn SignupPage() -> impl IntoView {
@@ -31,18 +32,10 @@ pub fn SignupPage() -> impl IntoView {
         e.prevent_default();
         set_disabled.set(true);
 
-        let email = email_input
-            .get()
-            .expect("<input> should be mounted")
-            .value();
-        let password = password_input
-            .get()
-            .expect("<input> should be mounted")
-            .value();
-        let repeate_password = repeate_password_input
-            .get()
-            .expect("<input> should be mounted")
-            .value();
+        let email = email_input.extract_value();
+        let password = password_input.extract_value();
+        let repeate_password = repeate_password_input.extract_value();
+
         if password != repeate_password {
             set_error.set(Some("Passwords do not match".to_string()));
             set_disabled.set(false);

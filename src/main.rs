@@ -1,7 +1,9 @@
 mod api;
 mod api_types;
+mod components;
 mod context;
 mod pages;
+mod utils;
 
 use context::auth::get_auth_context;
 use context::auth::set_auth_context;

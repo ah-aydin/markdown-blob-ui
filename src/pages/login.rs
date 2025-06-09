@@ -9,6 +9,7 @@ use crate::api::auth::login;
 use crate::context::auth::set_auth_context;
 use crate::context::auth::AuthContext;
 use crate::pages::utils::no_auth_required;
+use crate::utils::InputExtractor;
 
 #[component]
 pub fn LoginPage() -> impl IntoView {
@@ -25,14 +26,8 @@ pub fn LoginPage() -> impl IntoView {
         e.prevent_default();
         set_disabled.set(true);
 
-        let email = email_input
-            .get()
-            .expect("<input> should be mounted")
-            .value();
-        let password = password_input
-            .get()
-            .expect("<input> should be mounted")
-            .value();
+        let email = email_input.extract_value();
+        let password = password_input.extract_value();
 
         spawn_local(async move {
             let login_result = login(email, password).await;
