@@ -2,7 +2,6 @@ mod api;
 mod api_types;
 mod context;
 mod pages;
-mod tutorial;
 
 use context::auth::get_auth_context;
 use context::auth::set_auth_context;
@@ -16,7 +15,8 @@ use leptos_router::components::Router;
 use leptos_router::components::Routes;
 use leptos_router::path;
 use pages::login::LoginPage;
-use tutorial::Tutorial;
+use pages::signup::SignupPage;
+use pages::tutorial::Tutorial;
 
 #[component]
 fn App() -> impl IntoView {
@@ -36,8 +36,9 @@ fn App() -> impl IntoView {
             </nav>
             <main>
                 <Routes fallback=|| "Not found">
-                    <Route path=path!("/login") view=LoginPage />
                     <Route path=path!("/") view=Tutorial />
+                    <Route path=path!("/login") view=LoginPage />
+                    <Route path=path!("/signup") view=SignupPage />
                 </Routes>
             </main>
         </Router>

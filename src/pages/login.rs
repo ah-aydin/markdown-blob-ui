@@ -4,26 +4,17 @@ use leptos::html;
 use leptos::prelude::*;
 use leptos::reactive::spawn_local;
 use leptos::IntoView;
-use leptos_router::hooks::use_navigate;
 
 use crate::api::auth::login;
-use crate::context::auth::get_auth_context;
 use crate::context::auth::set_auth_context;
 use crate::context::auth::AuthContext;
+use crate::pages::utils::no_auth_required;
 
 #[component]
 pub fn LoginPage() -> impl IntoView {
-    let auth_context = get_auth_context();
     let set_auth_context = set_auth_context();
-    let navigate = use_navigate();
 
-    Effect::new(move |_| {
-        if auth_context.read().is_some() {
-            navigate("/", Default::default());
-        }
-    });
-
-    let (token, set_token) = signal(String::new());
+    no_auth_required();
 
     let (error, set_error) = signal::<Option<String>>(None);
     let (disabled, set_disabled) = signal(false);
@@ -47,12 +38,6 @@ pub fn LoginPage() -> impl IntoView {
             let login_result = login(email, password).await;
             match login_result {
                 Ok(login_response) => {
-                    set_token.update(|token| {
-                        *token = format!(
-                            "{} - {}",
-                            login_response.access_token, login_response.refresh_token
-                        );
-                    });
                     set_error.set(None);
                     set_auth_context.set(Some(AuthContext {
                         access_token: login_response.access_token,
@@ -60,11 +45,9 @@ pub fn LoginPage() -> impl IntoView {
                     }));
                 }
                 Err(Some(err)) => {
-                    set_token.set("".to_string());
                     set_error.set(Some(err.message));
                 }
                 Err(_) => {
-                    set_token.set("".to_string());
                     set_error.set(Some("Unknown error".to_string()));
                 }
             };
@@ -88,7 +71,6 @@ pub fn LoginPage() -> impl IntoView {
                 Login
             </button>
         </form>
-        <p>{token}</p>
         <p class="red">{error}</p>
     }
 }
